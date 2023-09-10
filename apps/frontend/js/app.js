@@ -46,7 +46,7 @@ const writer = () => {
 }
 
 const readerhealth = (readerparagraph) => {
-    const url='http://reader/health';
+    const url='http://writer-service.default.svc.cluster.local/health';
     fetch(url, {
         method: "GET",
         mode: 'cors',
@@ -67,7 +67,7 @@ const readerhealth = (readerparagraph) => {
 }
 
  const writerhealth = (writerparagraph) => {
-    const url='http://writer/health';
+    const url='http://writer-service.default.svc.cluster.local/health';
     fetch(url, {
         method: "GET",
         mode: 'cors',
