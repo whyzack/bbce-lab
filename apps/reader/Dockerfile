@@ -3,5 +3,5 @@ WORKDIR /app
 ADD . /app
 RUN pip install redis
 
-EXPOSE 8081
+EXPOSE 8080
 ENTRYPOINT ["python", "main.py"]
