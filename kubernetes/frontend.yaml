@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fronted
+  labels:
+    app: fronted
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: 044723872363.dkr.ecr.us-east-1.amazonaws.com/bbce_front:latest
+        ports:
+        - containerPort: 3000
+          name: frontend-port
+      imagePullSecrets:
+      - name: ecr-registry-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+spec:
+  selector:
+    app: frontend
+  ports:
+  - name: frontend-port
+    protocol: TCP
+    port: 80
+    targetPort: frontend-port
+    

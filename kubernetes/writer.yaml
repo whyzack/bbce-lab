@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: writer
+  labels:
+    app: writer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: writer
+  template:
+    metadata:
+      labels:
+        app: writer
+    spec:
+      containers:
+      - name: writer
+        image: 044723872363.dkr.ecr.us-east-1.amazonaws.com/bbce_writer:latest
+        ports:
+        - containerPort: 3000
+          name: writer-port
+      imagePullSecrets:
+      - name: ecr-registry-secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: writer-service
+spec:
+  selector:
+    app: writer
+  ports:
+  - name: writer-port
+    protocol: TCP
+    port: 80
+    targetPort: writer-port
+    
