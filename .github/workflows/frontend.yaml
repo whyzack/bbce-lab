@@ -1,0 +1,47 @@
+name: Deploy to EKS
+
+on:
+  push:
+    branches:
+      - frontend
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Set up kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" > kubeconfig.yaml
+          mkdir -p ~/.kube
+          mv kubeconfig.yaml ~/.kube/config
+          chmod 600 ~/.kube/config
+
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Get Latest GitHub Tag
+        id: get_tag
+        run: |
+          git fetch --tags
+          echo "::set-output name=tag::$(git describe --tags --abbrev=0)"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }})
+
+      - name: Build and Push Docker Image to ECR
+        run: |
+          $(aws ecr get-login --no-include-email --region ${{ secrets.AWS_REGION }})
+          docker build -t bbce_front .
+          docker tag bbce_front:latest ${{ secrets.AWS_ECR_REGISTRY_URI_FRONTEND }}/bbce_front:${{ steps.get_tag.outputs.tag }}
+          docker push ${{ secrets.AWS_ECR_REGISTRY_URI_FRONTEND }}/bbce_front:${{ steps.get_tag.outputs.tag }}
+
+      - name: Update Kubernetes Deployment
+        run: |
+          kubectl set image deployment/frontend frontend=${{ secrets.AWS_ECR_REGISTRY_URI_FRONTEND }}/bbce_front:${{ steps.get_tag.outputs.tag }}
+
