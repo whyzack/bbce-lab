@@ -36,7 +36,7 @@ jobs:
 
       - name: Build and Push Docker Image to ECR
         run: |
-          $(aws ecr get-login --no-include-email --region ${{ secrets.AWS_REGION }})
+          $(aws ecr get-login-password --no-include-email --region ${{ secrets.AWS_REGION }})
           docker build -t bbce_front .
           docker tag bbce_front:latest ${{ secrets.AWS_ECR_REGISTRY_URI_FRONTEND }}/bbce_front:${{ steps.get_tag.outputs.tag }}
           docker push ${{ secrets.AWS_ECR_REGISTRY_URI_FRONTEND }}/bbce_front:${{ steps.get_tag.outputs.tag }}
