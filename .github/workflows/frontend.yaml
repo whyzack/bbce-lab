@@ -43,5 +43,5 @@ jobs:
 
       - name: Update Kubernetes Deployment
         run: |
-          kubectl set image deployment/frontend frontend=${{ secrets.AWS_ECR_REGISTRY_URI_FRONTEND }}bbce_front:${{ steps.get_tag.outputs.tag }}
+          kubectl set image deployment/frontend frontend=${{ secrets.AWS_ECR_REGISTRY_URI }}/bbce_front:${{ steps.get_tag.outputs.tag }}
 
