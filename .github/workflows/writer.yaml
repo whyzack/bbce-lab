@@ -37,11 +37,11 @@ jobs:
       - name: Build and Push Docker Image to ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ECR_REGISTRY_URI }}
-          docker build -t bbce_writer -f ./apps/writerend/Dockerfile .
+          docker build -t bbce_writer -f ./apps/writer/Dockerfile .
           docker tag bbce_writer:latest ${{ secrets.AWS_ECR_REGISTRY_URI }}/bbce_writer:${{ steps.get_tag.outputs.tag }}
           docker push ${{ secrets.AWS_ECR_REGISTRY_URI }}/bbce_writer:${{ steps.get_tag.outputs.tag }}
 
       - name: Update Kubernetes Deployment
         run: |
-          kubectl set image deployment/writerend writerend=${{ secrets.AWS_ECR_REGISTRY_URI }}/bbce_writer:${{ steps.get_tag.outputs.tag }}
+          kubectl set image deployment/writer writer=${{ secrets.AWS_ECR_REGISTRY_URI }}/bbce_writer:${{ steps.get_tag.outputs.tag }}
 
