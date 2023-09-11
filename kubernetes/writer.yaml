@@ -18,7 +18,7 @@ spec:
       - name: writer
         image: 044723872363.dkr.ecr.us-east-1.amazonaws.com/bbce_writer:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 8082
           name: writer-port
       imagePullSecrets:
       - name: ecr-registry-secret
